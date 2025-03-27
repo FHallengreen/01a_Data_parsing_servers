@@ -14,28 +14,80 @@ class FileReader:
             return file.read()
 
     def read_txt(self):
-        return self.read_file("product.txt")
+        content = self.read_file("product.txt")
+        products = []
+        current_product = {}
+        
+        for line in content.split("\n"):
+            if line.strip():
+                key, value = line.split("=", 1)
+                if key == "id":
+                    if current_product:
+                        products.append(current_product)
+                    current_product = {"id": int(value)}
+                elif key == "name":
+                    current_product["name"] = value
+                elif key == "price":
+                    current_product["price"] = float(value)
+        
+        if current_product:
+            products.append(current_product)
+        
+        return products
 
     def read_csv(self):
         full_path = os.path.join(self.base_path, "product.csv")
         with open(full_path, "r", newline="") as csvfile:
             reader = csv.DictReader(csvfile)
-            return list(reader)
+            return [
+                {
+                    "id": int(row["id"]),
+                    "name": row["name"],
+                    "price": float(row["price"]),
+                }
+                for row in reader
+            ]
 
     def read_json(self):
         full_path = os.path.join(self.base_path, "product.json")
         with open(full_path, "r") as file:
-            return json.load(file)
+            data = json.load(file)
+            # Normalize to snake_case if needed
+            return [
+                {
+                    "id": int(item["id"]),
+                    "name": item["name"],
+                    "price": float(item["price"]),
+                }
+                for item in data
+            ]
 
     def read_xml(self):
         full_path = os.path.join(self.base_path, "product.xml")
         tree = ET.parse(full_path)
-        return tree.getroot()
+        root = tree.getroot()
+        products = []
+        for product in root.findall("Product"):  # Match case from XML
+            products.append({
+                "id": int(product.find("id").text),
+                "name": product.find("name").text,
+                "price": float(product.find("price").text),
+            })
+        return products
 
     def read_yaml(self):
         full_path = os.path.join(self.base_path, "product.yaml")
         with open(full_path, "r") as file:
-            return yaml.safe_load(file)
+            data = yaml.safe_load(file)
+            products = data.get("products", [])
+            return [
+                {
+                    "id": int(item["id"]),
+                    "name": item["name"],
+                    "price": float(item["price"]),
+                }
+                for item in products
+            ]
 
 if __name__ == "__main__":
     reader = FileReader()

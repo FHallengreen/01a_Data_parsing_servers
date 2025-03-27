@@ -4,6 +4,5 @@
         <id>1</id>
         <name>Kajkage</name>
         <price>20</price>
-        <isAvailable>true</isAvailable>
     </Product>
 </Products>

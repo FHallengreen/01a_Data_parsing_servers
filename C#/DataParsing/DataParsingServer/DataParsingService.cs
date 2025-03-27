@@ -18,7 +18,6 @@ public static class DataParsingService
                 Id = int.TryParse(p["id"]?.ToString(), out var id) ? id : 0,
                 Name = p["name"]?.ToString() ?? "Unknown",
                 Price = double.TryParse(p["price"]?.ToString(), out var price) ? price : 0.0,
-                IsAvailable = bool.TryParse(p["isAvailable"]?.ToString(), out var available) && available
             })
             .ToList();
 
@@ -34,7 +33,6 @@ public static class DataParsingService
                 Id = int.TryParse(p.Element("id")?.Value, out var id) ? id : 0,
                 Name = p.Element("name")?.Value ?? "Unknown",
                 Price = double.TryParse(p.Element("price")?.Value, out var price) ? price : 0.0,
-                IsAvailable = bool.TryParse(p.Element("isAvailable")?.Value, out var available) && available
             })
             .ToList();
         return products;
@@ -64,7 +62,6 @@ public static class DataParsingService
                     Id = int.TryParse(parts[0], out var id) ? id : 0,
                     Name = parts[1],
                     Price = double.TryParse(parts[2], out var price) ? price : 0.0,
-                    IsAvailable = bool.TryParse(parts[3], out var available) && available
                 };
             })
             .ToList();
@@ -112,9 +109,6 @@ public static class DataParsingService
                 case "price":
                     currentProduct.Price = double.TryParse(value, out var price) ? price : 0.0;
                     break;
-                case "isavailable":
-                    currentProduct.IsAvailable = bool.TryParse(value, out var available) && available;
-                    break;
             }
         }
 
@@ -130,7 +124,7 @@ public static class DataParsingService
     {
         Console.WriteLine($"\n--- {format.ToUpper()} Data ---");
         products.ForEach(p =>
-            Console.WriteLine($"ID: {p.Id}, Name: {p.Name}, Price: {p.Price}, Available: {p.IsAvailable}")
+            Console.WriteLine($"ID: {p.Id}, Name: {p.Name}, Price: {p.Price}")
         );
     }
 }
